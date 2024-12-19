@@ -136,10 +136,6 @@ blog-project/
 └── README.md               # Project documentation
 ```
 
-```
-
-
-
 ## API Documentation
 ### 1. Authentication
 #### 1.1 Register User
