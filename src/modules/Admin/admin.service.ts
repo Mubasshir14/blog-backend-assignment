@@ -6,10 +6,10 @@ import { Blog } from '../Blogs/blog.model';
 const blockUserFromDB = async (id: string) => {
   const user = await User.findUserById(id);
   if (!user) {
-    throw new AppError(httpStatus.NOT_FOUND, "User not found!");
+    throw new AppError(httpStatus.NOT_FOUND, 'User not found!');
   }
   if (user?.isBlocked) {
-    throw new AppError(httpStatus.BAD_REQUEST, "User is already blocked!");
+    throw new AppError(httpStatus.BAD_REQUEST, 'User is already blocked!');
   }
   await User.findByIdAndUpdate(id, { isBlocked: true }, { new: true });
 };

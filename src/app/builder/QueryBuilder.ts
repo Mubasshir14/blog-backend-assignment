@@ -1,4 +1,4 @@
-import { Query } from "mongoose";
+import { Query } from 'mongoose';
 
 class QueryBuilder<T> {
   public modelQuery: Query<T[], T>;
@@ -13,8 +13,8 @@ class QueryBuilder<T> {
     if (this?.query?.search) {
       this.modelQuery = this.modelQuery.find({
         $or: [
-          { title: { $regex: this?.query?.search, $options: "i" } },
-          { content: { $regex: this?.query?.search, $options: "i" } },
+          { title: { $regex: this?.query?.search, $options: 'i' } },
+          { content: { $regex: this?.query?.search, $options: 'i' } },
         ],
       });
     }
@@ -32,11 +32,11 @@ class QueryBuilder<T> {
   }
 
   sort() {
-    let order = "-";
+    let order = '-';
     if (this?.query?.sortOrder) {
-      order = this?.query?.sortOrder === "asc" ? "+" : "-";
+      order = this?.query?.sortOrder === 'asc' ? '+' : '-';
     }
-    let sortBy = "createdAt";
+    let sortBy = 'createdAt';
     if (this?.query?.sortBy) {
       sortBy = this?.query?.sortBy as string;
     }

@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
-import { Types } from "mongoose";
-import { Model } from "mongoose";
+import { Types } from 'mongoose';
+import { Model } from 'mongoose';
 
 export type TUser = {
   name: string;
@@ -20,4 +20,4 @@ export interface TUserModel extends Model<TUser> {
   ): Promise<boolean>;
 }
 
-export type TUserRole = "user" | "admin";
+export type TUserRole = 'user' | 'admin';

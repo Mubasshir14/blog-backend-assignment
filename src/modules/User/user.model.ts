@@ -29,7 +29,7 @@ userSchema.set('toJSON', {
   },
 });
 
-// user exist or not with email 
+// user exist or not with email
 userSchema.statics.isUserExists = async function (email: string) {
   const user = await User.findOne({ email }).select('+password');
   return user;
