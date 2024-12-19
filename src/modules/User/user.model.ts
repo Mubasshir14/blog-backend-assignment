@@ -1,108 +1,67 @@
-/* eslint-disable no-useless-escape */
-/* eslint-disable @typescript-eslint/no-this-alias */
-import { model, Schema } from 'mongoose';
-import { TUser } from './user.interface';
+import mongoose, { Schema } from 'mongoose';
 import bcrypt from 'bcrypt';
+import httpStatus from 'http-status';
+import { TUser, TUserModel } from './user.interface';
+import AppError from '../../app/errors/AppError';
 import config from '../../app/config';
 
-const emailValidationRegex =
-  /^[a-zA-Z0-9]+([\._]?[a-zA-Z0-9]+)*@[a-zA-Z0-9]+(\.[a-zA-Z]{2,3})+$/;
-
-const userSchema = new Schema<TUser>(
+const userSchema: Schema = new Schema<TUser>(
   {
-    name: {
-      type: String,
-      required: [true, 'Name is required'],
-    },
-    email: {
-      type: String,
-      required: [true, 'Email is required'],
-      unique: true,
-      validate: [
-        {
-          validator: function (value) {
-            return emailValidationRegex.test(value);
-          },
-          message: 'Please enter a valid email address',
-        },
-        {
-          validator: function (value) {
-            return value.length >= 3;
-          },
-          message: 'Email must be at least 3 characters long',
-        },
-        {
-          validator: function (value) {
-            return value.length <= 30;
-          },
-          message: 'Email must not exceed 30 characters',
-        },
-        {
-          validator: function (value) {
-            return !value.startsWith('.');
-          },
-          message: 'Email cannot start with a dot',
-        },
-        {
-          validator: function (value) {
-            return !value.endsWith('.');
-          },
-          message: 'Email cannot end with a dot',
-        },
-        {
-          validator: function (value) {
-            return !value.includes('..');
-          },
-          message: 'Email cannot contain consecutive dots',
-        },
-        {
-          validator: function (value) {
-            const domain = value.split('@')[1];
-            return domain && domain.includes('.');
-          },
-          message: 'Email must have a valid domain with a dot',
-        },
-        {
-          validator: function (value) {
-            const allowedDomains = ['gmail.com', 'yahoo.com', 'outlook.com'];
-            const domain = value.split('@')[1];
-            return allowedDomains.includes(domain);
-          },
-          message:
-            'Email must belong to a valid domain (gmail.com, yahoo.com, outlook.com)',
-        },
-      ],
-    },
-    password: {
-      type: String,
-      required: true,
-      select: 0,
-    },
-    role: {
-      type: String,
-      enum: ['admin', 'user'],
-      default: 'user',
-    },
-    isBlocked: {
-      type: Boolean,
-      default: false,
-    },
+    name: { type: String, required: true },
+    email: { type: String, required: true, unique: true },
+    password: { type: String, required: true, select: 0 },
+    role: { type: String, enum: ['admin', 'user'], default: 'user' },
+    isBlocked: { type: Boolean, default: false },
   },
-  { timestamps: true },
+  {
+    timestamps: true,
+  },
 );
 
+// return with id name and email
+userSchema.set('toJSON', {
+  transform: (doc, ret) => {
+    return {
+      _id: ret._id,
+      name: ret.name,
+      email: ret.email,
+    };
+  },
+});
+
+// user exist or not with email 
+userSchema.statics.isUserExists = async function (email: string) {
+  const user = await User.findOne({ email }).select('+password');
+  return user;
+};
+
+userSchema.statics.findUserId = async function (email: string) {
+  const user = await User.findOne({ email });
+  return user?._id || undefined;
+};
+
+userSchema.statics.findUserById = async function (id: string) {
+  const user = await User.findById(id);
+  return user || undefined;
+};
+
+userSchema.statics.isPasswordMatched = async function (
+  plainTextPassword,
+  hashedPassword,
+) {
+  return await bcrypt.compare(plainTextPassword, hashedPassword);
+};
+
 userSchema.pre('save', async function (next) {
-  const user = this;
-  user.password = await bcrypt.hash(
-    user.password,
+  const user = await User.findOne({ email: this.email });
+  if (user) {
+    throw new AppError(httpStatus.BAD_REQUEST, 'Email Already Registered!');
+  }
+  this.password = await bcrypt.hash(
+    this.password as string,
     Number(config.bcrypt_salt_rounds),
   );
   next();
 });
 
-userSchema.post('save', function (doc, next) {
-  doc.password = '';
-  next();
-});
-
-export const User = model<TUser>('User', userSchema);
+export const User = mongoose.model<TUser, TUserModel>('User', userSchema);

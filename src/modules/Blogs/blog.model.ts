@@ -1,7 +1,7 @@
 import { model, Schema } from 'mongoose';
-import { TBlogs } from './blog.interface';
+import { TBlog, TBlogModel } from './blog.interface';
 
-const blogSchema = new Schema<TBlogs>(
+const blogSchema = new Schema<TBlog>(
   {
     title: {
       type: String,
@@ -18,8 +18,6 @@ const blogSchema = new Schema<TBlogs>(
     },
     author: {
       type: Schema.Types.ObjectId,
-      required: [true, 'User id is required'],
-      unique: true,
       ref: 'User',
     },
     isPublished: {
@@ -30,4 +28,20 @@ const blogSchema = new Schema<TBlogs>(
   { timestamps: true },
 );
 
-export const Blog = model<TBlogs>('Blog', blogSchema);
+blogSchema.set('toJSON', {
+  transform: (doc, ret) => {
+    return {
+      _id: ret._id,
+      title: ret.title,
+      content: ret.content,
+      author: ret.author,
+    };
+  },
+});
+
+blogSchema.statics.isBlogExists = async function (id: string) {
+  const blog = await Blog.findById(id);
+  return blog;
+};
+
+export const Blog = model<TBlog, TBlogModel>('Blog', blogSchema);

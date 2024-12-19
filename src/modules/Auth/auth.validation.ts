@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-export const userValidationSchema = z.object({
+export const userRegisterValidationSchema = z.object({
   body: z.object({
     name: z
       .string()
@@ -36,6 +36,23 @@ export const userValidationSchema = z.object({
   }),
 });
 
-export const UserValidation = {
-  userValidationSchema,
+export const userLoginValidationSchema = z.object({
+  body: z.object({
+    email: z
+      .string()
+      .trim()
+      .email({ message: 'Invalid email address.' })
+      .min(1, { message: 'Email is required' })
+      .max(100, { message: 'Email must not exceed 100 characters.' }),
+
+    password: z.string().trim().min(4, {
+      message:
+        'Password is required and must be length of it at least 4 characters',
+    }),
+  }),
+});
+
+export const AuthValidation = {
+  userRegisterValidationSchema,
+  userLoginValidationSchema,
 };
