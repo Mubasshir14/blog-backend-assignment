@@ -52,9 +52,14 @@ Access the live project here: [Blog Backend Project Live](https://blog-project-m
 3. Set up environment variables:
    - Create a `.env` file in the root directory with the following variables:
      ```
-     PORT=3000
-     MONGO_URI=<your-mongodb-uri>
-     JWT_SECRET=<your-jwt-secret>
+     NODE_ENV= development
+     PORT=5000
+     DATABASE_URL= mongodb_uri 
+     BCRYPT_SALT_ROUND= any_number 
+     JWT_ACCESS_SECRET = secret_key 
+     JWT_REFRESH_SECRET = secret_key
+     JWT_ACCESS_EXPIRES_IN= day 
+     JWT_REFRESH_EXPIRES_IN= day
      ```
 
 4. Build the application:
@@ -71,6 +76,69 @@ Access the live project here: [Blog Backend Project Live](https://blog-project-m
      ```bash
      npm run start:prod
      ```
+
+## File Structure
+```
+```plaintext
+blog-project/
+├── src/
+│   ├── app/
+│   │   ├── builder/
+│   │   │   └── QueryBuilder.ts
+│   │   ├── config/
+│   │   │   └── index.ts
+│   │   ├── errors/
+│   │   │   ├── AppError.ts
+│   │   │   ├── handleZodError.ts
+│   │   │   └── handleCastError.ts
+│   │   ├── interface/
+│   │   │   ├── events.ts
+│   │   │   └── index.d.ts
+│   │   ├── middlewares/
+│   │   │   ├── auth.ts
+│   │   │   └── globalErrorHandler.ts
+│   │   ├── route/
+│   │   │   └── index.ts
+│   │   ├── utils/
+│   │   │   ├── CatchAsync.ts
+│   │   │   └── sendResponse.ts
+│   ├── module/
+│   │   ├── Admin/
+│   │   │   ├── controller.ts
+│   │   │   ├── service.ts
+│   │   │   └── route.ts
+│   │   ├── Blog/
+│   │   │   ├── controller.ts
+│   │   │   ├── interface.ts
+│   │   │   ├── model.ts
+│   │   │   ├── route.ts
+│   │   │   ├── validation.ts
+│   │   │   └── service.ts
+│   │   ├── Auth/
+│   │   │   ├── controller.ts
+│   │   │   ├── interface.ts
+│   │   │   ├── model.ts
+│   │   │   ├── route.ts
+│   │   │   ├── validation.ts
+│   │   │   └── service.ts
+│   │   ├── User/
+│   │   │   ├── interface.ts
+│   │   │   ├── model.ts
+│   │   │   └── validation.ts
+│   ├── app.ts
+│   ├── server.ts
+├── dist/                   # Compiled JavaScript files
+├── .env                    # Environment variables
+├── .eslintrc.js            # ESLint configuration
+├── .prettierrc             # Prettier configuration
+├── package.json            # Project dependencies and scripts
+├── tsconfig.json           # TypeScript configuration
+└── README.md               # Project documentation
+```
+
+```
+
+
 
 ## API Documentation
 ### 1. Authentication
