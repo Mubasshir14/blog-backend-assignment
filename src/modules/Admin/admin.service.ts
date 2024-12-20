@@ -9,7 +9,7 @@ const blockUserFromDB = async (id: string) => {
     throw new AppError(httpStatus.NOT_FOUND, 'User not found!');
   }
   if (user?.isBlocked) {
-    throw new AppError(httpStatus.BAD_REQUEST, 'User is already blocked!');
+    throw new AppError(httpStatus.BAD_REQUEST, 'User is blocked!');
   }
   await User.findByIdAndUpdate(id, { isBlocked: true }, { new: true });
 };

@@ -29,12 +29,12 @@ const blogSchema = new Schema<TBlog>(
 );
 
 blogSchema.set('toJSON', {
-  transform: (doc, ret) => {
+  transform: (doc, obj) => {
     return {
-      _id: ret._id,
-      title: ret.title,
-      content: ret.content,
-      author: ret.author,
+      _id: obj._id,
+      title: obj.title,
+      content: obj.content,
+      author: obj.author,
     };
   },
 });
