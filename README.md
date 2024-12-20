@@ -202,11 +202,27 @@ blog-project/
 
 ## Scripts
 
-```bash
-- `npm run start`: Start the application.
-- `npm run start:dev`: Start the application in development mode.
-- `npm run build`: Build the application.
-- `npm run lint`: Run ESLint to check for linting issues.
-- `npm run lint:fix`: Fix linting issues.
-- `npm run format`: Format the code using Prettier.
-```
+- Start the application:
+  ```bash
+  npm run start
+  ```
+- Start the application in development mode:
+  ```bash
+  npm run start:dev
+  ```
+- Build the application:
+  ```bash
+  npm run build
+  ```
+- Run ESLint to check for linting issues:
+  ```bash
+  npm run lint
+  ```
+- Fix linting issues:
+  ```bash
+  npm run lint:fix
+  ```
+- Format the code using Prettier:
+  ```bash
+  npm run format
+  ```
